@@ -1,0 +1,10 @@
+/* By Default, blur and desaturate the placeholder image, then transition to sharp and saturated when the image loads and is in-view */
+img[data-blur-up] {
+    filter: blur(1rem) saturate(0.5);
+    overflow: hidden;
+    transition: all 0.75s ease;
+}
+
+img[data-loaded] {
+    filter: blur(0px) saturate(1);
+}

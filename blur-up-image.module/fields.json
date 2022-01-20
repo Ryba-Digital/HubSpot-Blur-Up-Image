@@ -1,0 +1,138 @@
+[{
+  "default": {
+    "src": "https://fs.hubspotusercontent00.net/hubfs/21043808/team-looking-at-laptop.jpg",
+    "alt": "placeholder_200x200",
+    "loading": "disabled",
+    "width": 250,
+    "height": 169
+  },
+  "display_width": null,
+  "id": "c0659ae1-c6f6-be47-f874-aee733929395",
+  "label": "Image",
+  "locked": false,
+  "name": "img",
+  "required": false,
+  "resizable": true,
+  "responsive": true,
+  "show_loading": true,
+  "type": "image"
+}, {
+  "allow_new_line": false,
+  "default": "",
+  "display_width": null,
+  "help_text": "This is where you'd like to send your visitors when they click on the image. Please include a protocol (i.e. \"http://\") in the URL.",
+  "id": "63e5353d-6345-69dd-c6dc-bbd2a3049d97",
+  "label": "Link (optional)",
+  "locked": false,
+  "name": "link",
+  "placeholder": "http://...",
+  "required": false,
+  "show_emoji_picker": false,
+  "type": "text",
+  "validation_regex": "",
+  "visibility": {
+    "controlling_field": "c0659ae1-c6f6-be47-f874-aee733929395",
+    "operator": "NOT_EMPTY"
+  }
+}, {
+  "default": false,
+  "display": "checkbox",
+  "display_width": null,
+  "id": "4e826dd6-cf20-b308-cbb3-de456080195e",
+  "label": "Open link in new tab",
+  "locked": false,
+  "name": "target",
+  "required": false,
+  "type": "boolean",
+  "visibility": {
+    "controlling_field": "63e5353d-6345-69dd-c6dc-bbd2a3049d97",
+    "operator": "NOT_EMPTY"
+  }
+},
+{
+  "type": "group",
+  "name": "styles",
+  "tab": "STYLE",
+  "label": "Styles",
+  "children": [
+    {
+    "name": "alignment",
+    "label": "Alignment and spacing",
+    "required": false,
+    "locked": false,
+    "children": [
+      {
+        "name": "img_position",
+        "label": "Position Image",
+        "help_text":"Position the image within it's container.",
+        "required": false,
+        "type": "alignment",
+        "visibility": {
+          "hidden_subfields": {
+            "vertical_align": true
+          }
+        },
+        "default": {
+            "horizontal_align": "LEFT",
+            "vertical_align": "TOP"
+        }
+      },
+      {
+      "name": "spacing",
+      "label": "Spacing",
+      "required": false,
+      "locked": false,
+      "type": "spacing",
+      "inline_help_text": "",
+      "help_text": ""
+      }
+    ],
+    "type": "group",
+    "inline_help_text": "",
+    "help_text": "",
+    "default": {} },
+    {
+    "name": "background",
+    "label": "Background",
+    "required": false,
+    "locked": false,
+    "children": [
+      {
+      "name": "background_color",
+      "label": "Background Color",
+      "required": false,
+      "locked": false,
+      "inline_help_text": "",
+      "help_text": "",
+      "type": "color",
+      "default": {
+        "color": "#ffffff",
+        "opacity": 0 } }
+    ],
+    "type": "group",
+    "inline_help_text": "",
+    "help_text": "",
+    "default": {} },
+    {
+    "name": "border",
+    "label": "Border",
+    "required": false,
+    "locked": false,
+    "children": [
+      {
+      "name": "border",
+      "label": "Border",
+      "required": false,
+      "locked": false,
+      "inline_help_text": "",
+      "help_text": "",
+      "type": "border",
+      "allow_custom_border_sides": true
+      }
+    ],
+    "type": "group",
+    "inline_help_text": "",
+    "help_text": "",
+    "default": {} }
+  ]
+}]

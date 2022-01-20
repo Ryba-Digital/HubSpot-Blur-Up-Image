@@ -1,0 +1,91 @@
+<!-- module html  -->
+{% if module.target == true %}
+  {% set target = "_blank" %}
+{% else %}
+  {% set target = "_parent" %}
+{% endif %}
+
+
+{# Do not prepend // when usign a personalization token, the link already has // or starts with /, the link is mailto, the link is an anchor, or the link is not defined #}
+{% unless (module.link is string_containing "{{") or (module.link is string_containing "//") or (module.link is string_startingwith "/") or (module.link is string_startingwith "mailto") or (module.link is string_startingwith "#") or !module.link %}
+  {% set link = "//" ~ module.link %}
+{% else %}
+  {% set link = module.link || "" %}
+{% endunless %}
+
+{# If there is a link, create the 'a' element #}
+{% if module.link %}
+  <a href="{{link}}" target="{{target}}" style="border-width:0px;border:0px;">
+{% endif %}
+
+{% if module.img.src %}
+  {% set lazy_load = module.img.loading %}
+  {% set loadingAttr = lazy_load != 'disabled' ? 'loading="{{ module.img.loading }}"' : '' %}
+	{% set sizeAttrs = 'width="{{ module.img.width }}" height="{{ module.img.height }}"' %}
+  {% set resolutions = [0.5, 1, 1.5, 2, 2.5, 3] %}
+
+  {# If the image is auto-sized/responsive (we'll mostly handle this type with JS) #}
+	{% if module.img.size_type == 'auto' %}
+		{% set sizeAttrs = 'style="max-width: 100%; height: auto;"' %}
+
+    {# Load a low-resolution placeholder image as the 'src', and the full-resolution base image as the 'data-src' #}
+    <img src="{{ resize_image_url(module.img.src, 50) }}" data-src="{{ module.img.src }}" alt="{{ module.img.alt }}" data-blur-up data-auto-size {{ loadingAttr }} {{ sizeAttrs }}>
+	{% elif module.img.size_type == 'auto_custom_max' %}
+		{% set sizeAttrs = 'width="{{ module.img.max_width }}" height="{{ module.img.max_height }}" style="max-width: 100%; height: auto;"' %}
+
+    {# Because HS knows the width and height, it will auto-generate a srcset for this image #}
+    {% require_head %}
+
+      {# 
+        If loading is set to 'eager' or 'disabled,' we will preload the srcset (forcing it to load as early as possible).
+        Otherwise, we will prefetch, which instructs the page to download the srcset in the background at a low-priority  
+      #}
+      <link rel="{{ (lazy_load == "disabled" || lazy_load == "eager") ? "preload" : "prefetch" }}" as="image" imagesrcset="{% for i in resolutions %}{{ resize_image_url(module.img.src, module.img.max_width*i)}} {{(module.img.max_width*i)}}w{% if not loop.last %},{% endif %}{% endfor %}" imagesizes="(max-width: {{module.img.max_width}}px) 100vw, {{module.img.max_width}}px">
+    {% end_require_head %}
+    <img data-blur-up src="{{ module.img.src }}" srcset="{% for i in resolutions %}{{ resize_image_url(module.img.src, module.img.max_width*i)}} {{(module.img.max_width*i)}}w{% if not loop.last %},{% endif %}{% endfor %}" sizes="(max-width: {{module.img.max_width}}px) 100vw, {{module.img.max_width}}px" alt="{{ module.img.alt }}" {{ loadingAttr }} {{ sizeAttrs }}>
+	{% else %}
+    {% require_head %}
+      <link rel="{{ (lazy_load == "disabled" || lazy_load == "eager") ? "preload" : "prefetch" }}" as="image" imagesrcset="{% for i in resolutions %}{{ resize_image_url(module.img.src, module.img.width*i)}} {{(module.img.width*i)}}w{% if not loop.last %},{% endif %}{% endfor %}" imagesizes="(max-width: {{module.img.width}}px) 100vw, {{module.img.width}}px">
+    {% end_require_head %}
+    <img data-blur-up src="{{ module.img.src }}" alt="{{ module.img.alt }}" {{ loadingAttr }} {{ sizeAttrs }}}}>
+  {% endif %}
+{% endif %}
+
+
+{# If there is a link, close the 'a' element #}
+{% if module.link %}
+  </a>
+{% endif %}
+
+
+{# Add imgae styles to match the default image module #}
+{% if module.styles.alignment.img_position.horizontal_align == "RIGHT" || module.styles.alignment.img_position.horizontal_align == "CENTER" || module.styles.alignment.spacing.css != "" || module.styles.border.border.css && module.styles.border.border.css != "border: ;/n" %}
+{% require_css %}
+  <style>
+    {% scope_css %}
+
+      img {
+        {% if module.styles.alignment.img_position.horizontal_align == "RIGHT" %}
+          margin-left: auto;
+          display: block;
+        {% endif %}
+        {% if module.styles.alignment.img_position.horizontal_align == "CENTER" %}
+          margin-left: auto;
+          margin-right: auto;
+          display: block;
+        {% endif %}
+        {% if module.styles.alignment.spacing.css != "" %}
+          {{ module.styles.alignment.spacing.css }}
+        {% endif %}
+        {% if module.styles.background.background_color.opacity != 0 %}
+          background: {{ module.styles.background.background_color.css }}
+        {% endif %}
+        {% if module.styles.border.border.css && module.styles.border.border.css != "border: ;/n" %}
+          {{ module.styles.border.border.css }}
+        {% endif %}
+      }
+
+    {% end_scope_css %}
+  </style>
+{% end_require_css %}
+{% endif %}
